@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Найди работу своей мечты сегодня! Официальное трудоустройство, жилье, транспорт и стабильная зарплата.">
+    <title>Не Жди Завтра - Твоё Новое Начало</title>
+    
+    <!-- Подключаем шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Цветовая палитра */
+            --color-primary: #00BCD4;
+            --color-primary-light: #4DD0E1;
+            --color-secondary: #00E5FF;
+            
+            /* Фон */
+            --color-bg-main: #0A0E1A;
+            
+            /* Текст */
+            --color-text-light: #ffffff;
+            --color-text-muted: #94A3B8;
+            --color-text-dark: #0f172a;
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.15);
+            --glass-blur: 16px;
+            
+            /* Градиенты */
+            --gradient-primary: linear-gradient(135deg, #00BCD4 0%, #00E5FF 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-main);
+            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, var(--color-bg-main) 70%);
+            color: var(--color-text-light);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Анимированный фон */
+        .ambient-light {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 10s ease-in-out infinite;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .ambient-1 { 
+            top: -20%; 
+            left: -10%; 
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.3) 0%, transparent 70%);
+        }
+        .ambient-2 { 
+            bottom: -20%; 
+            right: -10%; 
+            animation-delay: -5s; 
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.2) 0%, transparent 70%); 
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -20px) scale(1.1); }
+        }
+
+        /* Экраны */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s;
+            z-index: 1;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* --- Эффект Текста (Анимация заливки) --- */
+        .animated-fill-text {
+            font-weight: 900;
+            font-style: italic;
+            color: transparent; /* Текст прозрачный */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); /* Контур */
+            position: relative;
+            display: inline-block;
+            white-space: nowrap; /* Чтобы не переносился посередине эффекта */
+        }
+        
+        .animated-fill-text::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            color: var(--color-secondary); /* Цвет заливки */
+            overflow: hidden;
+            border-right: 2px solid var(--color-secondary); /* Линия прогресса */
+            animation: fillText 3.5s linear infinite alternate;
+        }
+
+        @keyframes fillText {
+            0%, 10% { width: 0; opacity: 0.5; }
+            90%, 100% { width: 100%; opacity: 1; }
+        }
+
+        /* Специфичные настройки для заголовков */
+        .header-logo {
+            font-size: clamp(2.2rem, 7vw, 5rem);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .footer-tagline {
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
+        }
+
+        /* --- Preloader --- */
+        #preLoadContainer {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            background: radial-gradient(circle at center, #1e293b 0%, #0A0E1A 100%);
+        }
+
+        .preload-subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            margin-top: 1.5rem;
+            margin-bottom: 2.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .btn-glow {
+            position: relative;
+            padding: 1rem 3.5rem;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-dark);
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(0, 188, 212, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 5;
+        }
+        .btn-glow:active {
+            transform: scale(0.95);
+        }
+
+        /* --- Video --- */
+        #videoContainer {
+            background: #000;
+            justify-content: center;
+            align-items: center;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* --- Main Content --- */
+        #messageContainer {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .message-title {
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .message-subtitle {
+            color: var(--color-text-muted);
+            font-size: 1rem;
+        }
+
+        /* CTA Card */
+        .cta-card {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid rgba(0, 188, 212, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 188, 212, 0.15);
+            backdrop-filter: blur(10px);
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 188, 212, 0.15); border-color: rgba(0, 188, 212, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(0, 188, 212, 0.3); border-color: rgba(0, 188, 212, 0.6); }
+        }
+
+        .phone-link {
+            display: block;
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+            margin: 0.5rem 0;
+        }
+
+        .cta-person {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Grid */
+        .section-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* По умолчанию 2 колонки */
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Адаптив: на очень узких экранах (<360px) делаем 1 колонку для читаемости */
+        @media (max-width: 360px) {
+            .advantages-grid {
+                grid-template-columns: 1fr;
+            }
+            /* Последний элемент в 1 колонке не нужно растягивать особо, он и так на всю ширину */
+            .advantages-grid .advantage-card:last-child:nth-child(odd) {
+                grid-column: auto; 
+            }
+        }
+
+        .advantage-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(var(--glass-blur));
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        /* Растягиваем последнюю нечетную карточку */
+        .advantages-grid .advantage-card:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            text-align: left;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0, 188, 212, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            color: var(--color-secondary);
+            flex-shrink: 0; /* Чтобы иконка не сжималась */
+        }
+
+        /* Убираем margin-bottom у иконки в широкой карточке */
+        .advantages-grid .advantage-card:last-child:nth-child(odd) .icon-box {
+            margin-bottom: 0;
+        }
+
+        .advantage-text {
+            font-size: 0.85rem;
+            line-height: 1.3;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Vacancies */
+        .vacancies-toggle {
+            width: 100%;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--color-primary);
+            border-radius: 12px;
+            color: var(--color-primary);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vacancies-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+        .vacancies-list.open {
+            max-height: 400px;
+            margin-bottom: 1rem;
+        }
+        .vacancy-item {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        .vacancy-item:last-child { border-bottom: none; }
+        .vac-loc {
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .final-section {
+            text-align: center;
+            margin-top: auto;
+            padding: 2rem 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 188, 212, 0.3); border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="ambient-light ambient-1"></div>
+    <div class="ambient-light ambient-2"></div>
+
+    <!-- Экран 1: Preloader -->
+    <div id="preLoadContainer" class="screen active">
+        <!-- Применен эффект заливки текста, как просили -->
+        <div class="header-logo animated-fill-text" data-text="ТВОЁ НОВОЕ НАЧАЛО">
+            ТВОЁ НОВОЕ НАЧАЛО
+        </div>
+        
+        <p class="preload-subtitle">Ты готов к переменам?</p>
+        
+        <button id="startButton" class="btn-glow">ДА</button>
+    </div>
+
+    <!-- Экран 2: Видео -->
+    <div id="videoContainer" class="screen">
+        <video
+            id="videoPlayer"
+            playsinline
+            preload="none" 
+            controls
+            data-src="https://raw.githubusercontent.com/Suno2035/KARAVAEVO/main/video5235722050454195215.mp4"
+        >
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+
+    <!-- Экран 3: Контент -->
+    <div id="messageContainer" class="screen">
+        <div class="content-wrapper">
+            <header class="message-header">
+                <h1 class="message-title">НЕ ЖДИ ЗАВТРА</h1>
+                <p class="message-subtitle">Начни новую жизнь уже сегодня</p>
+            </header>
+
+            <div class="cta-card">
+                <p style="text-transform: uppercase; font-size: 0.8rem; color: var(--color-primary-light); margin-bottom: 0.5rem;">Позвони HR-менеджеру</p>
+                <a href="tel:+79774784919" class="phone-link">+7 (977) 478-49-19</a>
+                <span class="cta-person">Яна</span>
+            </div>
+
+            <section>
+                <h2 class="section-title">Почему выбирают нас</h2>
+                <div class="advantages-grid">
+                    <!-- 1. Бесплатное жилье -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Home -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        </div>
+                        <p class="advantage-text">Бесплатное жилье иногородним</p>
+                    </div>
+
+                    <!-- 2. Корпоративный транспорт -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Bus -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
+                        </div>
+                        <p class="advantage-text">Корпоративный транспорт (Ногинск, Электрогорск)</p>
+                    </div>
+
+                    <!-- 3. Официальное трудоустройство -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Briefcase/Document -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        </div>
+                        <p class="advantage-text">Официальное трудоустройство (ТК РФ)</p>
+                    </div>
+
+                    <!-- 4. Стабильная зарплата -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Banknote/Wallet -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="12" y1="11" x2="12" y2="13"/><line x1="10" y1="11" x2="10" y2="13"/><line x1="14" y1="11" x2="14" y2="13"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+                        </div>
+                        <p class="advantage-text">Стабильная зарплата точно в срок</p>
+                    </div>
+
+                    <!-- 5. Обучение -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Graduation Cap -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        </div>
+                        <p class="advantage-text">Обучение на месте с наставником</p>
+                    </div>
+
+                    <!-- 6. Вкусные обеды -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Utensils/Coffee -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                        </div>
+                        <p class="advantage-text">Вкусные горячие обеды</p>
+                    </div>
+
+                    <!-- 7. Спецодежда (Full width if odd) -->
+                    <div class="advantage-card">
+                        <div class="icon-box">
+                            <!-- Icon: Hard Hat / Shirt -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.4a2 2 0 0 0-1.9-1.9l-3.35.34A10.6 10.6 0 0 0 12 1.5c-1.07 0-2.1.1-3.13.34L5.52 1.5A2 2 0 0 0 3.62 3.4l.34 3.35A10.6 10.6 0 0 0 4.2 12l-1.5 8a2 2 0 0 0 2 2.3l3.35-.34A10.6 10.6 0 0 0 12 22.5c1.07 0 2.1-.1 3.13-.34l3.35.34a2 2 0 0 0 2-2.3l-1.5-8a10.6 10.6 0 0 0 .24-5.25z"/></svg>
+                        </div>
+                        <p class="advantage-text">Спецодежда выдаётся бесплатно</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <button id="vacanciesToggle" class="vacancies-toggle">
+                    <span>ПОКАЗАТЬ ВАКАНСИИ</span>
+                    <svg id="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div id="vacanciesList" class="vacancies-list">
+                    <div class="vacancy-item"><span>Оператор котельной</span><span class="vac-loc">Ногинск</span></div>
+                    <div class="vacancy-item"><span>Водитель погрузчика</span><span class="vac-loc">Ногинск</span></div>
+                    <div class="vacancy-item"><span>Машинист БДМ</span><span class="vac-loc">Ногинск</span></div>
+                    <div class="vacancy-item"><span>Прессовщик</span><span class="vac-loc">Ногинск</span></div>
+                    <div class="vacancy-item"><span>Резчик бумаги</span><span class="vac-loc">Ногинск</span></div>
+                    <div class="vacancy-item"><span>Контролёр по качеству</span><span class="vac-loc">Ногинск</span></div>
+                </div>
+            </section>
+
+            <div class="final-section">
+                <!-- Применен эффект заливки текста здесь тоже -->
+                <div class="footer-tagline animated-fill-text" data-text="ДЕЙСТВУЙ СЕГОДНЯ!">
+                    ДЕЙСТВУЙ СЕГОДНЯ!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const videoContainer = document.getElementById('videoContainer');
+        const messageContainer = document.getElementById('messageContainer');
+        const preLoadContainer = document.getElementById('preLoadContainer');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const vacanciesToggle = document.getElementById('vacanciesToggle');
+        const vacanciesList = document.getElementById('vacanciesList');
+        const chevron = document.getElementById('chevron');
+
+        startButton.addEventListener('click', () => {
+            preLoadContainer.classList.remove('active');
+            setTimeout(() => { videoContainer.classList.add('active'); }, 300);
+            
+            if(!videoPlayer.src) videoPlayer.src = videoPlayer.dataset.src;
+            videoPlayer.load();
+            videoPlayer.muted = false;
+            
+            videoPlayer.play().catch(() => {
+                videoContainer.classList.remove('active');
+                messageContainer.classList.add('active');
+            });
+        });
+
+        videoPlayer.addEventListener('ended', () => {
+            videoContainer.classList.remove('active');
+            setTimeout(() => { messageContainer.classList.add('active'); }, 300);
+        });
+        
+        videoPlayer.addEventListener('error', () => {
+            videoContainer.classList.remove('active');
+            messageContainer.classList.add('active');
+        });
+
+        vacanciesToggle.addEventListener('click', () => {
+            vacanciesList.classList.toggle('open');
+            chevron.style.transform = vacanciesList.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+            chevron.style.transition = 'transform 0.3s';
+        });
+    </script>
+</body>
+</html>
