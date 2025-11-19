@@ -103,46 +103,66 @@
             z-index: 10;
         }
 
-        /* --- Эффект Текста (Анимация заливки) --- */
+        /* --- НОВЫЙ Эффект Текста (Адаптивный) --- */
         .animated-fill-text {
             font-weight: 900;
             font-style: italic;
-            color: transparent; /* Текст прозрачный */
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); /* Контур */
-            position: relative;
+            
+            /* Делаем сам текст прозрачным, чтобы видеть фон */
+            color: transparent;
+            
+            /* Добавляем обводку */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            
+            /* Создаем градиент фона: 50% цвет, 50% прозрачность */
+            background-image: linear-gradient(90deg, var(--color-secondary) 50%, transparent 50%);
+            background-size: 200% 100%; /* Фон в 2 раза шире текста */
+            background-position: 100% 0; /* Сначала показываем прозрачную часть */
+            
+            /* Обрезаем фон по тексту */
+            -webkit-background-clip: text;
+            background-clip: text;
+            
+            /* Разрешаем перенос текста! */
+            white-space: normal;
             display: inline-block;
-            white-space: nowrap; /* Чтобы не переносился посередине эффекта */
-        }
-        
-        .animated-fill-text::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 0;
-            height: 100%;
-            color: var(--color-secondary); /* Цвет заливки */
-            overflow: hidden;
-            border-right: 2px solid var(--color-secondary); /* Линия прогресса */
-            animation: fillText 3.5s linear infinite alternate;
+            text-align: center;
+            
+            /* Анимация движения фона */
+            animation: fillTextGradient 3.5s linear infinite alternate;
         }
 
-        @keyframes fillText {
-            0%, 10% { width: 0; opacity: 0.5; }
-            90%, 100% { width: 100%; opacity: 1; }
+        /* Убираем старый псевдоэлемент */
+        .animated-fill-text::before {
+            display: none;
+        }
+
+        @keyframes fillTextGradient {
+            0%, 10% { background-position: 100% 0; } /* Прозрачный */
+            90%, 100% { background-position: 0 0; }   /* Залитый */
         }
 
         /* Специфичные настройки для заголовков */
         .header-logo {
-            font-size: clamp(2.2rem, 7vw, 5rem);
-            line-height: 1.2;
+            /* Уменьшили минимальный размер с 2.2rem до 1.8rem для мобильных */
+            font-size: clamp(1.8rem, 7vw, 5rem); 
+            line-height: 1.1;
             margin-bottom: 1rem;
             text-transform: uppercase;
             letter-spacing: -1px;
+            max-width: 100%;
+        }
+
+        /* Дополнительный медиа-запрос для совсем узких экранов (iPhone SE, Fold и т.д.) */
+        @media (max-width: 380px) {
+            .header-logo {
+                font-size: 1.6rem; /* Фиксированный размер поменьше */
+            }
         }
 
         .footer-tagline {
             font-size: clamp(1.8rem, 6vw, 3.5rem);
+            line-height: 1.2;
         }
 
         /* --- Preloader --- */
@@ -150,7 +170,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem; /* Чуть больше отступов */
             background: radial-gradient(circle at center, #1e293b 0%, #0A0E1A 100%);
         }
 
@@ -395,8 +415,8 @@
 
     <!-- Экран 1: Preloader -->
     <div id="preLoadContainer" class="screen active">
-        <!-- Применен эффект заливки текста, как просили -->
-        <div class="header-logo animated-fill-text" data-text="ТВОЁ НОВОЕ НАЧАЛО">
+        <!-- Обновленный элемент: убрали data-text, теперь анимация через background-clip -->
+        <div class="header-logo animated-fill-text">
             ТВОЁ НОВОЕ НАЧАЛО
         </div>
         
@@ -517,7 +537,7 @@
 
             <div class="final-section">
                 <!-- Применен эффект заливки текста здесь тоже -->
-                <div class="footer-tagline animated-fill-text" data-text="ДЕЙСТВУЙ СЕГОДНЯ!">
+                <div class="footer-tagline animated-fill-text">
                     ДЕЙСТВУЙ СЕГОДНЯ!
                 </div>
             </div>
