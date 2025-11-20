@@ -269,11 +269,17 @@
 
         .phone-link {
             display: block;
-            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            /* ИЗМЕНЕНИЕ 1: Уменьшение минимального шрифта для адаптивности */
+            font-size: clamp(1.5rem, 8vw, 2.5rem); 
             font-weight: 800;
             color: #fff;
             text-decoration: none;
             margin: 0.5rem 0;
+            /* Обеспечиваем, что текст помещается в одну строку на большинстве мобильных устройств */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 0.5rem; /* Небольшие внутренние отступы */
         }
 
         .cta-person {
@@ -390,14 +396,28 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.9rem;
+            align-items: center; /* Выравнивание элементов в строке */
         }
         .vacancy-item:last-child { border-bottom: none; }
+        
+        /* ИЗМЕНЕНИЕ 2: Стили для адреса в списке вакансий */
         .vac-loc {
             color: var(--color-text-muted);
-            font-size: 0.75rem; /* Немного уменьшил размер, чтобы поместился длинный адрес */
-            max-width: 50%; /* Ограничил ширину для адреса */
+            font-size: 0.75rem; /* Немного меньше для переноса строк */
+            /* Увеличиваем ширину, чтобы дать больше места для длинного адреса */
+            max-width: 55%; 
             text-align: right;
+            line-height: 1.3;
         }
+        
+        /* Немного уменьшим имя вакансии, чтобы адрес поместился */
+        .vacancy-item span:first-child {
+            max-width: 40%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
 
         .final-section {
             text-align: center;
@@ -450,6 +470,7 @@
 
             <div class="cta-card">
                 <p style="text-transform: uppercase; font-size: 0.8rem; color: var(--color-primary-light); margin-bottom: 0.5rem;">Позвони HR-менеджеру</p>
+                <!-- Здесь применен адаптивный шрифт clamp() и добавлены отступы -->
                 <a href="tel:+79774784919" class="phone-link">+7 (977) 478-49-19</a>
                 <span class="cta-person">Яна</span>
             </div>
@@ -472,7 +493,6 @@
                             <!-- Icon: Bus -->
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
                         </div>
-                        <!-- ИЗМЕНЕНИЕ: Караваево -> Ногинск -->
                         <p class="advantage-text">Корпоративный транспорт (Ногинск, Электрогорск)</p>
                     </div>
 
@@ -529,7 +549,6 @@
                     <svg id="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div id="vacanciesList" class="vacancies-list">
-                    <!-- ИЗМЕНЕНИЕ: Караваево -> Московская область, Богородский городской округ, деревня Караваево -->
                     <div class="vacancy-item"><span>Оператор котельной</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
                     <div class="vacancy-item"><span>Водитель погрузчика</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
                     <div class="vacancy-item"><span>Машинист БДМ</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
