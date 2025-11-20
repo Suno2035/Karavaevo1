@@ -269,7 +269,7 @@
 
         .phone-link {
             display: block;
-            /* ИЗМЕНЕНИЕ 1: Уменьшение минимального шрифта для адаптивности */
+            /* Уменьшение минимального шрифта для адаптивности */
             font-size: clamp(1.5rem, 8vw, 2.5rem); 
             font-weight: 800;
             color: #fff;
@@ -393,31 +393,36 @@
         .vacancy-item {
             padding: 0.8rem 1rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            /* Изменили на flex, чтобы название вакансии занимало всю ширину */
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* Выравнивание слева */
             font-size: 0.9rem;
-            align-items: center; /* Выравнивание элементов в строке */
-        }
-        .vacancy-item:last-child { border-bottom: none; }
-        
-        /* ИЗМЕНЕНИЕ 2: Стили для адреса в списке вакансий */
-        .vac-loc {
-            color: var(--color-text-muted);
-            font-size: 0.75rem; /* Немного меньше для переноса строк */
-            /* Увеличиваем ширину, чтобы дать больше места для длинного адреса */
-            max-width: 55%; 
-            text-align: right;
-            line-height: 1.3;
+            align-items: center; 
         }
         
-        /* Немного уменьшим имя вакансии, чтобы адрес поместился */
+        /* Убираем стили для названия вакансии, чтобы оно занимало всю ширину */
         .vacancy-item span:first-child {
-            max-width: 40%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            max-width: 100%; /* Занимает всю ширину */
+            white-space: normal; /* Разрешаем перенос строки, если нужно */
+            overflow: visible;
+            text-overflow: clip;
         }
 
+        /* НОВЫЙ СТИЛЬ: для отдельного блока адреса */
+        .general-address {
+            padding: 0.8rem 1rem;
+            color: var(--color-text-muted);
+            text-align: center;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        /* Гарантируем, что самый последний элемент в списке не имеет нижней границы */
+        .vacancies-list > div:last-child { 
+             border-bottom: none; 
+        }
+
+        /* Удалили стили .vac-loc, так как этот элемент теперь не используется */
 
         .final-section {
             text-align: center;
@@ -549,12 +554,17 @@
                     <svg id="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div id="vacanciesList" class="vacancies-list">
-                    <div class="vacancy-item"><span>Оператор котельной</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
-                    <div class="vacancy-item"><span>Водитель погрузчика</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
-                    <div class="vacancy-item"><span>Машинист БДМ</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
-                    <div class="vacancy-item"><span>Прессовщик</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
-                    <div class="vacancy-item"><span>Резчик бумаги</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
-                    <div class="vacancy-item"><span>Контролёр по качеству</span><span class="vac-loc">Московская область, Богородский городской округ, деревня Караваево</span></div>
+                    <!-- Убран адрес из элементов вакансий -->
+                    <div class="vacancy-item"><span>Оператор котельной</span></div>
+                    <div class="vacancy-item"><span>Водитель погрузчика</span></div>
+                    <div class="vacancy-item"><span>Машинист БДМ</span></div>
+                    <div class="vacancy-item"><span>Прессовщик</span></div>
+                    <div class="vacancy-item"><span>Резчик бумаги</span></div>
+                    <div class="vacancy-item"><span>Контролёр по качеству</span></div>
+                    <!-- Общий адрес оставлен внизу -->
+                    <div class="general-address">
+                        Московская область, Богородский городской округ, деревня Караваево
+                    </div>
                 </div>
             </section>
 
